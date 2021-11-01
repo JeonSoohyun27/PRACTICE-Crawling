@@ -3,8 +3,8 @@ from selenium.webdriver.common.keys import Keys
 import time #코드를 멈춰주는 모듈
 import urllib.request #다운로드를 위한 모듈
 
-chrome_path = r'/usr/local/bin/chromedriver'
-driver = webdriver.Chrome(executable_path=chrome_path)
+chrome_path = r'/usr/local/bin/chromedriver' #chromedriver 경로를 못찾아줘서 별도로 지정함.
+driver = webdriver.Chrome(executable_path=chrome_path) 
 # driver = webdriver.Chrome('/usr/jeonsuhyeon/projects/selenium/chromedriver')
 driver.get("https://www.google.co.kr/imghp?hl=ko&ogbl")
 elem = driver.find_element_by_name("q") #검색창을 찾는 명령어
@@ -13,6 +13,26 @@ elem.send_keys(Keys.RETURN) #검색창 엔터
 # driver.find_elements_by_css_selector('.rg_i.Q4LuWd')[0].click() #[0]로 가장 첫번째 항목을 선택하고 .click으로 클릭해주기
                                                                 #개발자도구로 사진에 대한 class 확인 및 붙여넣기 
                                                                 #여러개의 항목 선택시 find_element's' 를 사용
+
+SCROLL_PAUSE_TIME = 1
+
+last_height = driver.execute_script("return document.body.scrollHeight") #브라우저의 높이를 알 수 있는 코드
+
+while True:
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") #브라우저 끝까지 스크롤을 내리는 명령어
+
+    # Wait to load page
+    time.sleep(SCROLL_PAUSE_TIME) #페이지 로딩을 기다려주는 코드
+
+    # Calculate new scroll height and compare with last scroll height
+    new_height = driver.execute_script("return document.body.scrollHeight")
+    if new_height == last_height:
+        try:    
+            driver.find_element_by_css_selector('.mye4qd').click() #검색어 더보기 항목을 클릭하기 위한 명령어
+        except:
+            break
+    last_height = new_height
+
 
 images = driver.find_elements_by_css_selector('.rg_i.Q4LuWd')
 count = 1
