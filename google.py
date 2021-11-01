@@ -28,29 +28,29 @@ while True:
     new_height = driver.execute_script("return document.body.scrollHeight")
     if new_height == last_height:
         try:    
-            driver.find_element_by_css_selector('.mye4qd').click() #검색어 더보기 항목을 클릭하기 위한 명령어
+            driver.find_element_by_css_selector('.mye4qd').click() #더보기 항목을 클릭하기 위한 명령어
         except:
-            break
+            break #더보기 항목이 없게되면 멈추기
     last_height = new_height
-
 
 images = driver.find_elements_by_css_selector('.rg_i.Q4LuWd')
 count = 1
 for image in images:
-    image.click()
-    time.sleep(2) #페이지를 로딩하는데 시간이 걸리므로 2초간 코드를 진행을 멈춰준다.
-    imgUrl = driver.find_element_by_css_selector('.n3VNCb').get_attribute('src')  #이미지를 클릭했을때 나오는 세부이미지 class를 넣어주고 .get_attribute를 통해 src주소 다운로드 진행
-                                                                            #print된 src 주소 https://s3-ap-northeast-1.amazonaws.com/dcreviewsresized/20210117170120_photo1_5f3a51b4b5f9.jpg
-    urllib.request.urlretrieve(imgUrl, str(count)+'.jpg') #src주소를 다운받아서 test.jpg라는 이름으로 저장해주는 명령어
-    count = count + 1
+    try:
+        image.click()
+        time.sleep(2) #페이지를 로딩하는데 시간이 걸리므로 2초간 코드를 진행을 멈춰준다.
+        imgUrl = driver.find_element_by_css_selector('.n3VNCb').get_attribute('src')  #이미지를 클릭했을때 나오는 세부이미지 class를 넣어주고 .get_attribute를 통해 src주소 다운로드 진행
+                                                                                        #print된 src 주소 https://s3-ap-northeast-1.amazonaws.com/dcreviewsresized/20210117170120_photo1_5f3a51b4b5f9.jpg
+        urllib.request.urlretrieve(imgUrl, str(count)+'.jpg') #src주소를 다운받아서 test.jpg라는 이름으로 저장해주는 명령어
+        count = count + 1
+    except:
+        pass
+driver.close()
 
-# assert "Python" in driver.title
-# elem = driver.find_element_by_name("q")
-# elem.clear()
-# elem.send_keys("pycon")
-# elem.send_keys(Keys.RETURN)
-# assert "No results found." not in driver.page_source
-# driver.close()
-
-# chrome_path = r'/usr/local/bin/chromedriver' #path from 'which chromedriver'
-# driver = webdriver.Chrome(executable_path=chrome_path)
+"""
+driver.find_element_by_css_selector('.n3VNCb') 처럼 class 이름을 통해 검색하게 될 경우 
+동일한 이름의 여러 클래스가 나오는 경우도 있으니 좀 더 상세하게 하기 위해서는 
+개발자 도구에서 class 우클릭 > copy > copy full XPath 를 선택한 후 
+find_element_by_css_selector 대신에 find_element_by_xpath를 사용해준다.
+find_element_by_xpath('/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div/div/div[3]/div[2]/c-wiz/div/div[1]/div[1]/div[2]/div/a/img')
+"""
